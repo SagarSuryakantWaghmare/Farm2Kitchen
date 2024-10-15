@@ -3,7 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { FaSeedling, FaUsers, FaHandsHelping } from "react-icons/fa"; // Icons for mission, founders, and impact
 import FarmToTable from "../components/FarmToTable";
 import Shraddha from "../assets/Shraddha.jpg";
-import Sagar from "../assets/Sagar.jpg";
+// import Sagar from "../assets/Sagar.jpg";
 import Kalyani from "../assets/Kalyani.jpg";
 import { useNavigate } from "react-router-dom";
 
@@ -17,7 +17,7 @@ const About = () => {
   // Sample images for founders (update with actual image paths)
   const founderImages = [
     { name: "Shraddha Shingare", img: Shraddha },
-    { name: "Sagar Waghmare", img: Sagar },
+    // { name: "Sagar Waghmare", img: Sagar },
     { name: "Kalyani Patil", img: Kalyani },
   ];
 
