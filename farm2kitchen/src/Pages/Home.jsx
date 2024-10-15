@@ -3,6 +3,7 @@ import Features from '../components/Features';
 import Slider from '../components/Slider';
 import HomeSlider from '../components/HomeSlider';
 import Stats from '../components/States';
+import ContactUs from '../components/ContactUs';
 function HomePage() {
     return (
         <div className="container mx-auto  bg-gray-50 pt-16">
@@ -12,6 +13,7 @@ function HomePage() {
             <Features className="mr-1"  />
 
             <Slider className="mr-1" /> 
+            <ContactUs/>
             
         </div>
     );
