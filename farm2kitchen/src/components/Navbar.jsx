@@ -11,7 +11,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 flex justify-between items-center px-6 py-4 shadow-md bg-white z-50">
+    <nav className="fixed top-0 left-0 right-0 flex justify-between items-center px-6 py-2 shadow-md bg-white z-50">
       <div>
         <img src={logo} alt="Farm2Kitchen Logo" className="h-20" />
       </div>

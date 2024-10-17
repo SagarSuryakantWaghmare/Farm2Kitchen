@@ -1,0 +1,50 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Build output
+dist
+build
+
+# Temporary files
+tmp/
+temp/
+
+# OS-specific files
+.DS_Store          # macOS
+Thumbs.db          # Windows
+
+# IDE specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Dependency directories
+jspm_packages/
+bower_components/
+
+# Other files to ignore
+*.tgz
+*.gz
+*.zip
+*.tar
+
+# Coverage reports
+coverage/
+
+# ESLint cache
+.eslintcache
+
+# dotenv environment variable files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
