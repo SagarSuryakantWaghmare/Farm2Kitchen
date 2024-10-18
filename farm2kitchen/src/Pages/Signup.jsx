@@ -1,129 +1,94 @@
-// src/Pages/Signup.js
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Link } from "react-router-dom";
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import affordableImage from '../assets/Veg3.jpg'; 
+import bg from '../assets/backgroundImage.jpg'; // Import the background image
 
-const Signup = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [error, setError] = useState(''); 
-  const [loading, setLoading] = useState(false); 
+const SignUp = () => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    setError(''); 
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-   
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords don't match");
-      return;
-    }
-
-    setLoading(true); // Start loading state
-    setError(''); // Clear previous error
-
-    try {
-      const response = await fetch('http://localhost:8000/api/v1/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
+    const handleSubmit = (event) => {
+        event.preventDefault();
         
-        console.log('User registered:', data);
-        navigate('/login'); // Redirect to login page after successful registration
-      } else {
-       
-        setError(data.message || 'Registration failed. Please try again.');
-      }
-    } catch (error) {
-      setError('An error occurred. Please try again.');
-      console.error('Error during signup:', error);
-    } finally {
-      setLoading(false); // Stop loading state
+        axios.post('http://localhost:3001/register', {name, email, password})
+        .then(result => {
+            console.log(result);
+            if(result.data === "Already registered"){
+                alert("E-mail already registered! Please Login to proceed.");
+                navigate('/login');
+            } else {
+                alert("Registered successfully! Please Login to proceed.");
+                navigate('/login');
+            }
+        })
+        .catch(err => console.log(err));
     }
-  };
 
-  return (
-    <div
-      className="bg-cover bg-center min-h-screen flex items-center justify-center"
-      style={{
-        backgroundImage: `url(${affordableImage})`, // Use the imported image
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        filter: 'brightness(90%)', // Reduce brightness of the background image
-      }}
-    >
-      <div className="bg-white p-8 rounded-lg shadow-2xl max-w-sm w-full text-center">
-        <h2 className="text-3xl font-bold text-green-500 mb-6">TradeConnect</h2>
-        <h3 className="text-xl font-bold mb-4">Create Your Account</h3>
-        {error && <div className="mb-4 text-red-500">{error}</div>} {/* Show error message */}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm Password"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600"
-            disabled={loading} // Disable button while loading
-          >
-            {loading ? 'Signing Up...' : 'Sign Up'}
-          </button>
-        </form>
-        <p className="text-gray-600 text-sm mt-4">
-          Already have an account?{' '}
-          <a href="/login" className="text-green-500">Log In</a>
-        </p>
-      </div>
-    </div>
-  );
-};
+    return (
+        <div 
+            className="flex justify-center items-center text-center min-h-screen bg-cover bg-center" 
+            style={{ backgroundImage: `url(${bg})` }} // Set the background image
+        >
+            <div className="bg-white p-6 rounded-lg shadow-md w-4/12">
+                <h2 className="mb-6 text-2xl font-bold">Register</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4 text-left">
+                        <label htmlFor="exampleInputName" className="block text-lg font-semibold mb-2">
+                            Name
+                        </label>
+                        <input 
+                            type="text"
+                            placeholder="Enter Name"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:bg-green-200"
+                            id="exampleInputName" 
+                            onChange={(event) => setName(event.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="mb-4 text-left">
+                        <label htmlFor="exampleInputEmail" className="block text-lg font-semibold mb-2">
+                            Email Id
+                        </label>
+                        <input 
+                            type="email" 
+                            placeholder="Enter Email"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:bg-green-200"
+                            id="exampleInputEmail" 
+                            onChange={(event) => setEmail(event.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="mb-4 text-left">
+                        <label htmlFor="exampleInputPassword" className="block text-lg font-semibold mb-2">
+                            Password
+                        </label>
+                        <input 
+                            type="password" 
+                            placeholder="Enter Password"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                            id="exampleInputPassword" 
+                            onChange={(event) => setPassword(event.target.value)}
+                            required
+                        />
+                    </div>
+                    <button 
+                        type="submit" 
+                        className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                        Register
+                    </button>
+                </form>
 
-export default Signup;
+                <p className="my-4">Already have an account?</p>
+                <Link to='/login' className="w-full inline-block bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition-colors">
+                    Login
+                </Link>
+            </div>
+        </div>
+    );
+}
+
+export default SignUp;

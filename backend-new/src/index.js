@@ -1,51 +1,58 @@
-// require('dotenv').config({path: './env'})
-import dotenv from "dotenv"
-import connectDB from "./db/index.js";
-import {app} from './app.js'
-dotenv.config({
-    path: './.env'
-})
+// ES module syntax
+import express from 'express';  
+import cors from 'cors';       
+import mongoose from 'mongoose';
+import FormDataModel from './models/FormData.js';  
+
+const app = express();
+app.use(express.json());
+app.use(cors());
 
 
+mongoose.connect('mongodb+srv://sagarwaghmare1384:VoHVrWrijmOP2r4e@Userdatabase.7znk7.mongodb.net/mydatabase?retryWrites=true&w=majority')
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-connectDB()
-.then(() => {
-    app.listen(process.env.PORT || 8000, () => {
-        console.log(`Server is running at port : ${process.env.PORT}`);
+// Register route
+app.post('/register', (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if user exists
+  FormDataModel.findOne({ email: email })
+    .then(user => {
+      if (user) {
+        res.json("Already registered");
+      } else {
+        FormDataModel.create(req.body)
+          .then(log_reg_form => res.json(log_reg_form))
+          .catch(err => res.status(500).json(err));
+      }
     })
-})
-.catch((err) => {
-    console.log("MONGO db connection failed !!! ", err);
-})
+    .catch(err => res.status(500).json(err));
+});
 
+// Login route
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
 
+  // Find user by email
+  FormDataModel.findOne({ email: email })
+    .then(user => {
+      if (user) {
+        // Check if the password matches
+        if (user.password === password) {
+          res.json("Success");
+        } else {
+          res.json("Wrong password");
+        }
+      } else {
+        res.json("No records found!");
+      }
+    })
+    .catch(err => res.status(500).json(err));
+});
 
-
-
-
-
-
-
-
-/*
-import express from "express"
-const app = express()
-( async () => {
-    try {
-        await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
-        app.on("errror", (error) => {
-            console.log("ERRR: ", error);
-            throw error
-        })
-
-        app.listen(process.env.PORT, () => {
-            console.log(`App is listening on port ${process.env.PORT}`);
-        })
-
-    } catch (error) {
-        console.error("ERROR: ", error)
-        throw err
-    }
-})()
-
-*/
+// Start the server
+app.listen(3001, () => {
+  console.log("Server listening on http://127.0.0.1:3001");
+});

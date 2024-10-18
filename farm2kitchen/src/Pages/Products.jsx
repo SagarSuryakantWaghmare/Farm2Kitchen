@@ -101,15 +101,18 @@ const ProductPage = () => {
   return (
     <div>
       <Spacer/>
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      <div className="flex items-center border border-gray-300 rounded-lg p-2 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white">
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="flex-grow outline-none border-none p-2 text-gray-700 placeholder-gray-400 focus:ring focus:ring-blue-300 rounded-md"
+      />
+      <button className="p-2 text-gray-600 hover:text-blue-600 transition-colors duration-200">
         <FaSearch />
-      </div>
+      </button>
+    </div>
 
       <div className="product-list">
         {filteredProducts.map((product) => (
