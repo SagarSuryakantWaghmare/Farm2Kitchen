@@ -8,4 +8,4 @@ const FormDataSchema = new mongoose.Schema({
 
 const FormDataModel = mongoose.model('log_reg_form', FormDataSchema);
 
-export default FormDataModel;  // Use ES module export
+export default FormDataModel;  

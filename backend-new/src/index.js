@@ -2,54 +2,63 @@
 import express from 'express';  
 import cors from 'cors';       
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
 import FormDataModel from './models/FormData.js';  
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-
-mongoose.connect('mongodb+srv://sagarwaghmare1384:VoHVrWrijmOP2r4e@Userdatabase.7znk7.mongodb.net/mydatabase?retryWrites=true&w=majority')
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Register route
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
-  // Check if user exists
-  FormDataModel.findOne({ email: email })
-    .then(user => {
-      if (user) {
-        res.json("Already registered");
-      } else {
-        FormDataModel.create(req.body)
-          .then(log_reg_form => res.json(log_reg_form))
-          .catch(err => res.status(500).json(err));
-      }
-    })
-    .catch(err => res.status(500).json(err));
+  try {
+    // Check if user exists
+    const existingUser = await FormDataModel.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json("Already registered");
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await FormDataModel.create({ ...req.body, password: hashedPassword });
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", error: err });
+  }
 });
 
 // Login route
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
-  // Find user by email
-  FormDataModel.findOne({ email: email })
-    .then(user => {
-      if (user) {
-        // Check if the password matches
-        if (user.password === password) {
-          res.json("Success");
-        } else {
-          res.json("Wrong password");
-        }
-      } else {
-        res.json("No records found!");
-      }
-    })
-    .catch(err => res.status(500).json(err));
+  try {
+    // Find user by email
+    const user = await FormDataModel.findOne({ email });
+    if (!user) {
+      return res.status(404).json("No records found!");
+    }
+
+    // Check if the password matches
+    const match = await bcrypt.compare(password, user.password);
+    if (match) {
+      res.json("Success");
+    } else {
+      res.status(401).json("Wrong password");
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error", error: err });
+  }
 });
 
 // Start the server
